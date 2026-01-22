@@ -50,7 +50,7 @@
   </header>
 
   <!-- HERO -->
-  <section class="max-w-5xl mx-auto px-4 py-12 text-center">
+  <section class="max-w-5xl mx-auto px-4 py-10 text-center">
     <span class="inline-block text-xs font-bold text-emerald-400 mb-3"
           x-text="t('govt_backed')"></span>
 
@@ -64,13 +64,26 @@
        x-text="t('site_note')"></p>
   </section>
 
+  <!-- UTILITY BAR -->
+  <section class="max-w-5xl mx-auto px-4 pb-6 grid grid-cols-2 gap-3 text-sm">
+    <a href="https://www.google.com/maps/search/?api=1&query=Hyderguda+Post+Office+Attapur"
+       target="_blank"
+       class="border border-white/10 rounded p-3 text-center hover:bg-white/5">
+      📍 <div class="font-semibold">Get Directions</div>
+    </a>
+
+    <a href="tel:04029561505"
+       class="border border-white/10 rounded p-3 text-center hover:bg-white/5">
+      ☎ <div class="font-semibold">Call Post Office</div>
+    </a>
+  </section>
+
   <!-- CATEGORIES -->
   <section class="max-w-6xl mx-auto px-4 py-6">
     <p class="text-sm text-slate-400 mb-4 text-center"
        x-text="t('category_help')"></p>
 
     <div class="grid grid-cols-2 md:grid-cols-5 gap-3 text-sm">
-
       <template x-for="cat in categories" :key="cat.id">
         <div
           @click="toggleCategory(cat.id)"
@@ -84,14 +97,20 @@
           <div class="text-xs text-slate-400" x-text="t(cat.desc)"></div>
         </div>
       </template>
-
     </div>
   </section>
 
   <!-- SCHEMES -->
   <main class="max-w-7xl mx-auto px-4 py-10">
-    <h3 class="text-xl font-bold mb-6 border-l-4 border-red-600 pl-3"
+    <h3 id="schemesSection"
+        class="text-xl font-bold mb-2 border-l-4 border-red-600 pl-3"
         x-text="t('our_schemes')"></h3>
+
+    <p x-show="activeCategory"
+       class="text-sm text-slate-400 mb-4">
+      <span x-text="t('showing_for')"></span>
+      <strong class="text-white" x-text="t('cat_' + activeCategory)"></strong>
+    </p>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       <template x-for="scheme in filteredSchemes()" :key="scheme.id">
@@ -127,6 +146,22 @@
 
       <h3 class="text-xl font-bold mb-2" x-text="activeScheme?.title"></h3>
       <p class="text-sm text-slate-400 mb-4" x-text="activeScheme?.desc"></p>
+
+      <!-- WHATSAPP -->
+      <a
+        :href="`https://wa.me/919347133286?text=${encodeURIComponent(
+          'Hello, I visited the Hyderguda Post Office website and would like clarification about the ' +
+          activeScheme.title +
+          ' account before visiting the post office. Please guide me on eligibility and required documents.'
+        )}`"
+        target="_blank"
+        class="block text-center bg-green-600 hover:bg-green-700 text-white text-sm font-semibold py-2 rounded">
+        💬 Ask before visiting (WhatsApp)
+      </a>
+
+      <p class="text-xs text-slate-400 mt-2">
+        WhatsApp is only for general guidance. Account opening and document verification are done only at the Post Office.
+      </p>
 
       <p class="text-xs text-slate-400 mt-4"
          x-text="t('visit_po')"></p>
@@ -180,6 +215,7 @@ function postOfficeApp() {
         cat_general: "General Savings",
         cat_general_desc: "Simple & safe savings",
         our_schemes: "Our Savings Schemes",
+        showing_for: "Showing schemes for:",
         visit_po: "For exact details, please visit the Post Office."
       },
       te: {
@@ -199,6 +235,7 @@ function postOfficeApp() {
         cat_general: "సాధారణ పొదుపు",
         cat_general_desc: "సురక్షిత పొదుపు మార్గాలు",
         our_schemes: "మా పొదుపు పథకాలు",
+        showing_for: "ఈ పథకాలు వీరి కోసం:",
         visit_po: "ఖచ్చితమైన వివరాల కోసం మీ సమీప పోస్టాఫీసును సందర్శించండి."
       }
     },
@@ -208,6 +245,10 @@ function postOfficeApp() {
 
     toggleCategory(cat) {
       this.activeCategory = this.activeCategory === cat ? null : cat;
+      this.$nextTick(() => {
+        document.getElementById('schemesSection')
+          ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
     },
 
     filteredSchemes() {
