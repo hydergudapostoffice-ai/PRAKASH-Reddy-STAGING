@@ -52,7 +52,7 @@
      class="border border-white/10 rounded-lg p-4 text-center">☎ Call Post Office</a>
 </section>
 
-<!-- 🔵 SCHEME CATEGORIES (RESTORED) -->
+<!-- CATEGORIES -->
 <section class="max-w-6xl mx-auto px-4 pb-10">
   <p class="text-sm text-slate-400 mb-4 text-center">
     Choose a category to find suitable savings schemes
@@ -88,30 +88,44 @@
   </div>
 </main>
 
-<!-- MODAL -->
+<!-- MODAL WITH CALCULATOR -->
 <div x-show="isModalOpen" style="display:none"
      class="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
 
   <div class="bg-slate-900 max-w-lg w-full rounded-xl p-6 border border-white/10">
-    <button @click="closeModal()" class="float-right">✕</button>
+    <button @click="closeModal()" class="float-right text-slate-400">✕</button>
 
     <h3 class="text-xl font-bold" x-text="activeScheme?.title"></h3>
-    <p class="text-sm text-slate-400 mb-3" x-text="activeScheme?.desc"></p>
-    <p class="text-sm text-emerald-400 mb-3" x-text="activeScheme?.who"></p>
+    <p class="text-sm text-slate-400 mb-2" x-text="activeScheme?.desc"></p>
+    <p class="text-sm text-emerald-400 mb-4" x-text="activeScheme?.who"></p>
 
-    <input type="number" x-model="userAmount"
-           class="w-full mb-3 p-2 rounded bg-slate-800 border border-white/10">
+    <!-- CALCULATOR -->
+    <label class="text-xs font-semibold mb-1 block">
+      <span x-text="activeScheme?.inputType === 'monthly'
+        ? t('monthly_amt')
+        : t('lump_amt')"></span>
+    </label>
 
-    <p class="text-sm mb-4"
-       x-text="activeScheme?.message.replace('{amount}', '₹' + userAmount)"></p>
+    <input type="number"
+           x-model.number="userAmount"
+           class="w-full mb-3 p-2 rounded bg-slate-800 border border-white/10" />
 
+    <div class="text-sm text-slate-300 mb-4"
+         x-text="activeScheme?.message.replace('{amount}', '₹' + userAmount)">
+    </div>
+
+    <!-- WHATSAPP -->
     <a :href="`https://wa.me/919347133286?text=${encodeURIComponent(
-      'I want details about ' + activeScheme.title
+      'I want guidance about the ' + activeScheme.title + ' scheme.'
     )}`"
        target="_blank"
-       class="block bg-green-600 text-white text-center py-3 rounded-lg">
-      💬 Ask on WhatsApp
+       class="block bg-green-600 text-white text-center py-3 rounded-lg font-semibold">
+      💬 Ask before visiting (WhatsApp)
     </a>
+
+    <p class="text-xs text-slate-400 mt-3">
+      For exact eligibility and account opening, please visit the Post Office.
+    </p>
   </div>
 </div>
 
@@ -126,6 +140,23 @@ function postOfficeApp() {
     userAmount:1000,
     activeCategory:null,
 
+    translations:{
+      en:{
+        govt_backed:"✔ Government of India Backed Savings Schemes",
+        site_title:"India Post Savings Schemes",
+        site_subtitle:"Understand schemes clearly and visit Hyderguda Post Office with confidence.",
+        monthly_amt:"Monthly amount (₹)",
+        lump_amt:"One-time amount (₹)"
+      },
+      te:{
+        govt_backed:"✔ ప్రభుత్వం మద్దతు ఉన్న పొదుపు పథకాలు",
+        site_title:"ఇండియా పోస్ట్ సేవింగ్స్ పథకాలు",
+        site_subtitle:"పథకాలను సులభంగా అర్థం చేసుకొని పోస్టాఫీసును సందర్శించండి.",
+        monthly_amt:"నెలవారీ మొత్తం (₹)",
+        lump_amt:"ఒక్కసారి పెట్టే మొత్తం (₹)"
+      }
+    },
+
     categories:[
       {id:'senior', icon:'👴', label:'Senior Citizens', desc:'60 years & above'},
       {id:'girl', icon:'👧', label:'Girl Child', desc:'Daughter’s future'},
@@ -135,27 +166,35 @@ function postOfficeApp() {
     ],
 
     schemes:[
-      {id:'SCSS',category:'senior',title:'Senior Citizen Savings Scheme',desc:'Quarterly income scheme',who:'For age 60+',message:'Investing ₹{amount} supports retirement income.'},
-      {id:'SSY',category:'girl',title:'Sukanya Samriddhi Yojana',desc:'Savings for girl child',who:'For parents of girl child',message:'Saving ₹{amount} monthly secures future.'},
-      {id:'MIS',category:'income',title:'Monthly Income Scheme',desc:'Fixed monthly income',who:'For regular income',message:'Investment of ₹{amount} gives monthly income.'},
-      {id:'PPF',category:'tax',title:'Public Provident Fund',desc:'Tax-free savings',who:'Long-term tax saving',message:'Saving ₹{amount} monthly builds corpus.'},
-      {id:'NSC',category:'tax',title:'National Savings Certificate',desc:'5-year savings',who:'Fixed term saving',message:'Deposit ₹{amount} for fixed term.'},
-      {id:'RD',category:'general',title:'Recurring Deposit',desc:'Monthly savings',who:'Disciplined saving',message:'Saving ₹{amount} monthly helps habit.'},
-      {id:'TD',category:'general',title:'Time Deposit',desc:'Fixed deposit',who:'Safe investment',message:'Deposit ₹{amount} for fixed returns.'},
-      {id:'KVP',category:'general',title:'Kisan Vikas Patra',desc:'Amount doubles',who:'Long-term growth',message:'Deposit ₹{amount} doubles over time.'}
+      {id:'SCSS',category:'senior',title:'Senior Citizen Savings Scheme',desc:'Quarterly income scheme',who:'For age 60 years & above',inputType:'lump',message:'Investing {amount} helps generate regular income.'},
+      {id:'SSY',category:'girl',title:'Sukanya Samriddhi Yojana',desc:'Savings for girl child',who:'For parents of a girl child',inputType:'monthly',message:'Saving {amount} every month builds your daughter’s future.'},
+      {id:'MIS',category:'income',title:'Monthly Income Scheme',desc:'Fixed monthly income',who:'For regular monthly income',inputType:'lump',message:'Investment of {amount} provides monthly income.'},
+      {id:'PPF',category:'tax',title:'Public Provident Fund',desc:'Long-term tax-free savings',who:'For long-term savings',inputType:'monthly',message:'Contributing {amount} monthly supports long-term savings.'},
+      {id:'NSC',category:'tax',title:'National Savings Certificate',desc:'5-year fixed savings',who:'For safe fixed-term investment',inputType:'lump',message:'Depositing {amount} gives assured maturity.'},
+      {id:'RD',category:'general',title:'Recurring Deposit',desc:'Monthly savings scheme',who:'For disciplined savings',inputType:'monthly',message:'Saving {amount} monthly builds discipline.'},
+      {id:'TD',category:'general',title:'Time Deposit',desc:'Fixed deposit',who:'For guaranteed returns',inputType:'lump',message:'Depositing {amount} gives fixed returns.'},
+      {id:'KVP',category:'general',title:'Kisan Vikas Patra',desc:'Amount doubles',who:'For long-term growth',inputType:'lump',message:'Depositing {amount} grows over time.'}
     ],
+
+    t(k){ return this.translations[this.lang][k] || k },
 
     filteredSchemes(){
       if(!this.activeCategory) return this.schemes;
       return this.schemes.filter(s=>s.category===this.activeCategory);
     },
 
-    toggleCategory(c){ this.activeCategory = this.activeCategory===c ? null : c; },
+    toggleCategory(c){ this.activeCategory = this.activeCategory===c ? null : c },
 
-    openModal(s){ this.activeScheme=s; this.isModalOpen=true; },
-    closeModal(){ this.isModalOpen=false; },
+    openModal(s){
+      this.activeScheme=s;
+      this.userAmount = s.inputType==='monthly' ? 1000 : 100000;
+      this.isModalOpen=true;
+    },
 
-    t(k){return k}, toggleLang(){this.lang=this.lang==='en'?'te':'en'}, initApp(){}
+    closeModal(){ this.isModalOpen=false },
+
+    toggleLang(){ this.lang=this.lang==='en'?'te':'en' },
+    initApp(){}
   }
 }
 </script>
