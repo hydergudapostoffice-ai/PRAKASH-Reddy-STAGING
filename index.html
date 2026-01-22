@@ -12,17 +12,21 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-  <style> body { font-family: Inter, sans-serif; } </style>
+  <style>
+    body { font-family: Inter, sans-serif; }
+  </style>
 </head>
 
 <body class="bg-slate-900 text-slate-100">
 
+<!-- STAGING WARNING -->
 <div class="bg-yellow-100 text-yellow-900 text-center text-sm font-bold py-2 px-4">
   ⚠️ TEST / STAGING website – not for public use.
 </div>
 
 <div x-data="postOfficeApp()" x-init="initApp()">
 
+<!-- HEADER -->
 <header class="bg-slate-950 border-b border-white/10 sticky top-0 z-40">
   <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
     <div>
@@ -37,22 +41,30 @@
 
 <!-- HERO -->
 <section class="max-w-5xl mx-auto px-4 py-14 text-center">
-  <span class="text-xs font-bold text-emerald-400" x-text="t('govt_backed')"></span>
-  <h2 class="text-3xl font-extrabold mt-4" x-text="t('site_title')"></h2>
-  <p class="text-slate-300 mt-2" x-text="t('site_subtitle')"></p>
+  <span class="text-xs font-bold text-emerald-400">✔ Government of India Backed Savings Schemes</span>
+  <h2 class="text-3xl font-extrabold mt-4">India Post Savings Schemes</h2>
+  <p class="text-slate-300 mt-2">
+    Understand schemes clearly and visit Hyderguda Post Office with confidence.
+  </p>
+  <p class="text-xs text-slate-400 mt-2">
+    No agents • No market risk • Official information only
+  </p>
 </section>
 
 <!-- UTILITIES -->
 <section class="max-w-5xl mx-auto px-4 pb-10 grid grid-cols-2 gap-4 text-sm">
   <a href="https://www.google.com/maps/search/?api=1&query=Hyderguda+Post+Office+Attapur"
      target="_blank"
-     class="border border-white/10 rounded-lg p-4 text-center">📍 Get Directions</a>
-
+     class="border border-white/10 rounded-lg p-4 text-center hover:bg-white/5">
+    📍 Get Directions
+  </a>
   <a href="tel:04029561505"
-     class="border border-white/10 rounded-lg p-4 text-center">☎ Call Post Office</a>
+     class="border border-white/10 rounded-lg p-4 text-center hover:bg-white/5">
+    ☎ Call Post Office
+  </a>
 </section>
 
-<!-- CATEGORIES -->
+<!-- SCHEME CATEGORIES -->
 <section class="max-w-6xl mx-auto px-4 pb-10">
   <p class="text-sm text-slate-400 mb-4 text-center">
     Choose a category to find suitable savings schemes
@@ -62,7 +74,7 @@
     <template x-for="cat in categories" :key="cat.id">
       <div @click="toggleCategory(cat.id)"
            :class="activeCategory === cat.id ? 'border-red-500 bg-white/10' : 'border-white/10'"
-           class="border rounded-lg p-4 text-center cursor-pointer">
+           class="border rounded-lg p-4 text-center cursor-pointer transition">
         <div class="text-xl" x-text="cat.icon"></div>
         <div class="font-semibold" x-text="cat.label"></div>
         <div class="text-xs text-slate-400" x-text="cat.desc"></div>
@@ -72,7 +84,7 @@
 </section>
 
 <!-- SCHEMES -->
-<main class="max-w-6xl mx-auto px-4 pb-16">
+<main id="schemesSection" class="max-w-6xl mx-auto px-4 pb-16">
   <h3 class="text-xl font-bold mb-6 border-l-4 border-red-600 pl-3">
     Our Savings Schemes
   </h3>
@@ -80,7 +92,7 @@
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
     <template x-for="scheme in filteredSchemes()" :key="scheme.id">
       <div @click="openModal(scheme)"
-           class="border border-white/10 rounded-xl p-6 cursor-pointer hover:bg-white/5">
+           class="border border-white/10 rounded-xl p-6 cursor-pointer hover:bg-white/5 transition">
         <h4 class="font-bold text-lg" x-text="scheme.title"></h4>
         <p class="text-sm text-slate-400" x-text="scheme.desc"></p>
       </div>
@@ -88,43 +100,51 @@
   </div>
 </main>
 
-<!-- MODAL WITH CALCULATOR -->
+<!-- MODAL -->
 <div x-show="isModalOpen" style="display:none"
      class="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
 
   <div class="bg-slate-900 max-w-lg w-full rounded-xl p-6 border border-white/10">
     <button @click="closeModal()" class="float-right text-slate-400">✕</button>
 
-    <h3 class="text-xl font-bold" x-text="activeScheme?.title"></h3>
+    <h3 class="text-xl font-bold mb-1" x-text="activeScheme?.title"></h3>
     <p class="text-sm text-slate-400 mb-2" x-text="activeScheme?.desc"></p>
-    <p class="text-sm text-emerald-400 mb-4" x-text="activeScheme?.who"></p>
+    <p class="text-sm text-emerald-400 mb-3" x-text="activeScheme?.who"></p>
 
-    <!-- CALCULATOR -->
-    <label class="text-xs font-semibold mb-1 block">
+    <!-- INPUT -->
+    <label class="text-xs font-semibold block mb-1">
       <span x-text="activeScheme?.inputType === 'monthly'
-        ? t('monthly_amt')
-        : t('lump_amt')"></span>
+        ? 'Monthly amount (₹)'
+        : 'One-time amount (₹)'"></span>
     </label>
 
     <input type="number"
            x-model.number="userAmount"
-           class="w-full mb-3 p-2 rounded bg-slate-800 border border-white/10" />
+           @input="recalculate()"
+           class="w-full mb-4 p-2 rounded bg-slate-800 border border-white/10">
 
-    <div class="text-sm text-slate-300 mb-4"
-         x-text="activeScheme?.message.replace('{amount}', '₹' + userAmount)">
+    <!-- CALCULATOR OUTPUT -->
+    <div x-show="calcResult" class="bg-slate-800/60 p-4 rounded-lg text-sm">
+      <p><strong>You Invest:</strong> ₹<span x-text="calcResult.invested"></span></p>
+      <p><strong>Approx. Value:</strong> ₹<span x-text="calcResult.maturity"></span></p>
+      <p class="text-xs text-slate-400 mt-1">
+        Over <span x-text="calcResult.tenure"></span> (indicative)
+      </p>
     </div>
 
     <!-- WHATSAPP -->
     <a :href="`https://wa.me/919347133286?text=${encodeURIComponent(
-      'I want guidance about the ' + activeScheme.title + ' scheme.'
+      'Hello, I visited the Hyderguda Post Office website and would like guidance about the ' +
+      activeScheme.title +
+      ' scheme before visiting the post office.'
     )}`"
        target="_blank"
-       class="block bg-green-600 text-white text-center py-3 rounded-lg font-semibold">
+       class="block bg-green-600 hover:bg-green-700 text-white text-center py-3 rounded-lg font-semibold mt-4">
       💬 Ask before visiting (WhatsApp)
     </a>
 
     <p class="text-xs text-slate-400 mt-3">
-      For exact eligibility and account opening, please visit the Post Office.
+      WhatsApp is only for general guidance. Account opening and verification are done only at the Post Office.
     </p>
   </div>
 </div>
@@ -132,6 +152,57 @@
 </div>
 
 <script>
+function calculateSchemeResult(type, inputValue) {
+  let invested = 0, maturity = 0, tenure = '';
+
+  switch (type) {
+    case 'SSY':
+      invested = inputValue * 15;
+      maturity = inputValue * 21 * 1.5;
+      tenure = '21 Years';
+      break;
+    case 'KVP':
+      invested = inputValue;
+      maturity = inputValue * 2;
+      tenure = '115 Months';
+      break;
+    case 'RD':
+      invested = inputValue * 60;
+      maturity = invested * 1.18;
+      tenure = '5 Years';
+      break;
+    case 'SCSS':
+      invested = inputValue;
+      maturity = inputValue + (inputValue * 0.082 * 5);
+      tenure = '5 Years';
+      break;
+    case 'MIS':
+      invested = inputValue;
+      maturity = inputValue + (inputValue * 0.074 * 5);
+      tenure = '5 Years';
+      break;
+    case 'NSC':
+      invested = inputValue;
+      maturity = inputValue * 1.449;
+      tenure = '5 Years';
+      break;
+    case 'TD':
+      invested = inputValue;
+      maturity = inputValue * 1.44;
+      tenure = '5 Years';
+      break;
+    default:
+      invested = inputValue;
+      maturity = inputValue;
+  }
+
+  return {
+    invested: Math.round(invested),
+    maturity: Math.round(maturity),
+    tenure
+  };
+}
+
 function postOfficeApp() {
   return {
     lang:'en',
@@ -139,23 +210,7 @@ function postOfficeApp() {
     activeScheme:null,
     userAmount:1000,
     activeCategory:null,
-
-    translations:{
-      en:{
-        govt_backed:"✔ Government of India Backed Savings Schemes",
-        site_title:"India Post Savings Schemes",
-        site_subtitle:"Understand schemes clearly and visit Hyderguda Post Office with confidence.",
-        monthly_amt:"Monthly amount (₹)",
-        lump_amt:"One-time amount (₹)"
-      },
-      te:{
-        govt_backed:"✔ ప్రభుత్వం మద్దతు ఉన్న పొదుపు పథకాలు",
-        site_title:"ఇండియా పోస్ట్ సేవింగ్స్ పథకాలు",
-        site_subtitle:"పథకాలను సులభంగా అర్థం చేసుకొని పోస్టాఫీసును సందర్శించండి.",
-        monthly_amt:"నెలవారీ మొత్తం (₹)",
-        lump_amt:"ఒక్కసారి పెట్టే మొత్తం (₹)"
-      }
-    },
+    calcResult:null,
 
     categories:[
       {id:'senior', icon:'👴', label:'Senior Citizens', desc:'60 years & above'},
@@ -166,35 +221,49 @@ function postOfficeApp() {
     ],
 
     schemes:[
-      {id:'SCSS',category:'senior',title:'Senior Citizen Savings Scheme',desc:'Quarterly income scheme',who:'For age 60 years & above',inputType:'lump',message:'Investing {amount} helps generate regular income.'},
-      {id:'SSY',category:'girl',title:'Sukanya Samriddhi Yojana',desc:'Savings for girl child',who:'For parents of a girl child',inputType:'monthly',message:'Saving {amount} every month builds your daughter’s future.'},
-      {id:'MIS',category:'income',title:'Monthly Income Scheme',desc:'Fixed monthly income',who:'For regular monthly income',inputType:'lump',message:'Investment of {amount} provides monthly income.'},
-      {id:'PPF',category:'tax',title:'Public Provident Fund',desc:'Long-term tax-free savings',who:'For long-term savings',inputType:'monthly',message:'Contributing {amount} monthly supports long-term savings.'},
-      {id:'NSC',category:'tax',title:'National Savings Certificate',desc:'5-year fixed savings',who:'For safe fixed-term investment',inputType:'lump',message:'Depositing {amount} gives assured maturity.'},
-      {id:'RD',category:'general',title:'Recurring Deposit',desc:'Monthly savings scheme',who:'For disciplined savings',inputType:'monthly',message:'Saving {amount} monthly builds discipline.'},
-      {id:'TD',category:'general',title:'Time Deposit',desc:'Fixed deposit',who:'For guaranteed returns',inputType:'lump',message:'Depositing {amount} gives fixed returns.'},
-      {id:'KVP',category:'general',title:'Kisan Vikas Patra',desc:'Amount doubles',who:'For long-term growth',inputType:'lump',message:'Depositing {amount} grows over time.'}
+      {id:'SCSS',category:'senior',title:'Senior Citizen Savings Scheme',desc:'Quarterly income scheme',who:'For age 60+',inputType:'lump'},
+      {id:'SSY',category:'girl',title:'Sukanya Samriddhi Yojana',desc:'Savings for girl child',who:'For parents of girl child',inputType:'monthly'},
+      {id:'MIS',category:'income',title:'Monthly Income Scheme',desc:'Fixed monthly income',who:'For regular income',inputType:'lump'},
+      {id:'PPF',category:'tax',title:'Public Provident Fund',desc:'Long-term tax-free savings',who:'For long-term savings',inputType:'monthly'},
+      {id:'NSC',category:'tax',title:'National Savings Certificate',desc:'5-year fixed term savings',who:'Fixed term saving',inputType:'lump'},
+      {id:'RD',category:'general',title:'Recurring Deposit',desc:'Monthly savings scheme',who:'Disciplined saving',inputType:'monthly'},
+      {id:'TD',category:'general',title:'Time Deposit',desc:'Fixed deposit scheme',who:'Safe investment',inputType:'lump'},
+      {id:'KVP',category:'general',title:'Kisan Vikas Patra',desc:'Amount doubles',who:'Long-term growth',inputType:'lump'}
     ],
-
-    t(k){ return this.translations[this.lang][k] || k },
 
     filteredSchemes(){
       if(!this.activeCategory) return this.schemes;
       return this.schemes.filter(s=>s.category===this.activeCategory);
     },
 
-    toggleCategory(c){ this.activeCategory = this.activeCategory===c ? null : c },
+    toggleCategory(c){
+      this.activeCategory = this.activeCategory===c ? null : c;
+      this.$nextTick(()=>document.getElementById('schemesSection').scrollIntoView({behavior:'smooth'}));
+    },
 
     openModal(s){
       this.activeScheme=s;
-      this.userAmount = s.inputType==='monthly' ? 1000 : 100000;
+      this.userAmount = s.inputType==='monthly'?1000:100000;
+      this.calcResult = calculateSchemeResult(s.id,this.userAmount);
       this.isModalOpen=true;
+      history.pushState({modal:true},'');
     },
 
-    closeModal(){ this.isModalOpen=false },
+    recalculate(){
+      this.calcResult = calculateSchemeResult(this.activeScheme.id,this.userAmount);
+    },
 
-    toggleLang(){ this.lang=this.lang==='en'?'te':'en' },
-    initApp(){}
+    closeModal(){
+      this.isModalOpen=false;
+      this.activeScheme=null;
+      this.calcResult=null;
+      if(history.state?.modal) history.back();
+    },
+
+    toggleLang(){this.lang=this.lang==='en'?'te':'en'},
+    initApp(){
+      window.addEventListener('popstate',()=>{this.isModalOpen=false});
+    }
   }
 }
 </script>
