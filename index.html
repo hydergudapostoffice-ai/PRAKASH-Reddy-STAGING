@@ -5,40 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hyderguda Post Office S.O. – Savings Schemes (Staging)</title>
 
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Alpine -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-  <style>
-    body { font-family: Inter, sans-serif; }
-  </style>
+  <style> body { font-family: Inter, sans-serif; } </style>
 </head>
 
 <body class="bg-slate-900 text-slate-100">
 
-<!-- STAGING WARNING -->
 <div class="bg-yellow-100 text-yellow-900 text-center text-sm font-bold py-2 px-4">
-  ⚠️ This is a TEST / STAGING website for internal review only. Not for public use.
+  ⚠️ TEST / STAGING website – not for public use.
 </div>
 
 <div x-data="postOfficeApp()" x-init="initApp()">
 
-<!-- HEADER -->
 <header class="bg-slate-950 border-b border-white/10 sticky top-0 z-40">
   <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
     <div>
       <h1 class="text-lg font-bold">INDIA POST</h1>
       <p class="text-xs tracking-widest font-semibold">HYDERGUDA S.O.</p>
     </div>
-    <button @click="toggleLang()"
-            class="text-xs px-3 py-1 border border-white/20 rounded">
+    <button @click="toggleLang()" class="text-xs px-3 py-1 border border-white/20 rounded">
       <span x-text="lang === 'en' ? 'ENG' : 'తెలుగు'"></span>
     </button>
   </div>
@@ -46,99 +37,81 @@
 
 <!-- HERO -->
 <section class="max-w-5xl mx-auto px-4 py-14 text-center">
-  <span class="inline-block text-xs font-bold text-emerald-400 mb-4"
-        x-text="t('govt_backed')"></span>
-
-  <h2 class="text-3xl md:text-4xl font-extrabold mb-4"
-      x-text="t('site_title')"></h2>
-
-  <p class="text-slate-300 max-w-2xl mx-auto text-sm md:text-base"
-     x-text="t('site_subtitle')"></p>
-
-  <p class="mt-4 text-xs text-slate-400"
-     x-text="t('site_note')"></p>
+  <span class="text-xs font-bold text-emerald-400" x-text="t('govt_backed')"></span>
+  <h2 class="text-3xl font-extrabold mt-4" x-text="t('site_title')"></h2>
+  <p class="text-slate-300 mt-2" x-text="t('site_subtitle')"></p>
 </section>
 
 <!-- UTILITIES -->
 <section class="max-w-5xl mx-auto px-4 pb-10 grid grid-cols-2 gap-4 text-sm">
   <a href="https://www.google.com/maps/search/?api=1&query=Hyderguda+Post+Office+Attapur"
      target="_blank"
-     class="border border-white/10 rounded-lg p-4 text-center hover:bg-white/5">
-    📍 <div class="font-semibold mt-1">Get Directions</div>
-  </a>
+     class="border border-white/10 rounded-lg p-4 text-center">📍 Get Directions</a>
 
   <a href="tel:04029561505"
-     class="border border-white/10 rounded-lg p-4 text-center hover:bg-white/5">
-    ☎ <div class="font-semibold mt-1">Call Post Office</div>
-  </a>
+     class="border border-white/10 rounded-lg p-4 text-center">☎ Call Post Office</a>
+</section>
+
+<!-- 🔵 SCHEME CATEGORIES (RESTORED) -->
+<section class="max-w-6xl mx-auto px-4 pb-10">
+  <p class="text-sm text-slate-400 mb-4 text-center">
+    Choose a category to find suitable savings schemes
+  </p>
+
+  <div class="grid grid-cols-2 md:grid-cols-5 gap-3 text-sm">
+    <template x-for="cat in categories" :key="cat.id">
+      <div @click="toggleCategory(cat.id)"
+           :class="activeCategory === cat.id ? 'border-red-500 bg-white/10' : 'border-white/10'"
+           class="border rounded-lg p-4 text-center cursor-pointer">
+        <div class="text-xl" x-text="cat.icon"></div>
+        <div class="font-semibold" x-text="cat.label"></div>
+        <div class="text-xs text-slate-400" x-text="cat.desc"></div>
+      </div>
+    </template>
+  </div>
 </section>
 
 <!-- SCHEMES -->
 <main class="max-w-6xl mx-auto px-4 pb-16">
-  <h3 id="schemesSection"
-      class="text-xl font-bold mb-6 border-l-4 border-red-600 pl-3"
-      x-text="t('our_schemes')"></h3>
+  <h3 class="text-xl font-bold mb-6 border-l-4 border-red-600 pl-3">
+    Our Savings Schemes
+  </h3>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-    <template x-for="scheme in schemes" :key="scheme.id">
+    <template x-for="scheme in filteredSchemes()" :key="scheme.id">
       <div @click="openModal(scheme)"
-           class="border border-white/10 rounded-xl p-6 cursor-pointer hover:bg-white/5 transition">
-        <h4 class="font-bold text-lg mb-1" x-text="scheme.title"></h4>
+           class="border border-white/10 rounded-xl p-6 cursor-pointer hover:bg-white/5">
+        <h4 class="font-bold text-lg" x-text="scheme.title"></h4>
         <p class="text-sm text-slate-400" x-text="scheme.desc"></p>
       </div>
     </template>
   </div>
 </main>
 
-<!-- FOOTER -->
-<footer class="bg-slate-950 border-t border-white/10">
-  <div class="max-w-6xl mx-auto px-4 py-8 text-sm text-slate-400">
-    <p>Opposite Pillar No.150, PVNR Expressway, Attapur, Hyderabad – 500048</p>
-    <p class="mt-2 text-xs">
-      A Unit of Department of Posts | Developed by GN Prakash Reddy (Hyderguda S.O.)
-    </p>
-  </div>
-</footer>
-
 <!-- MODAL -->
 <div x-show="isModalOpen" style="display:none"
      class="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
 
   <div class="bg-slate-900 max-w-lg w-full rounded-xl p-6 border border-white/10">
-    <button @click="closeModal()" class="float-right text-slate-400">✕</button>
+    <button @click="closeModal()" class="float-right">✕</button>
 
-    <h3 class="text-xl font-bold mb-1" x-text="activeScheme?.title"></h3>
+    <h3 class="text-xl font-bold" x-text="activeScheme?.title"></h3>
     <p class="text-sm text-slate-400 mb-3" x-text="activeScheme?.desc"></p>
+    <p class="text-sm text-emerald-400 mb-3" x-text="activeScheme?.who"></p>
 
-    <p class="text-sm text-emerald-400 mb-4" x-text="activeScheme?.who"></p>
+    <input type="number" x-model="userAmount"
+           class="w-full mb-3 p-2 rounded bg-slate-800 border border-white/10">
 
-    <label class="text-xs font-semibold">
-      <span x-text="activeScheme?.inputType === 'monthly'
-        ? 'Monthly amount (₹)'
-        : 'One-time amount (₹)'"></span>
-    </label>
-
-    <input type="number"
-           x-model="userAmount"
-           class="w-full mt-1 mb-4 p-2 rounded bg-slate-800 border border-white/10" />
-
-    <p class="text-sm text-slate-300 mb-4"
+    <p class="text-sm mb-4"
        x-text="activeScheme?.message.replace('{amount}', '₹' + userAmount)"></p>
 
-    <!-- WHATSAPP -->
     <a :href="`https://wa.me/919347133286?text=${encodeURIComponent(
-        'Hello, I visited the Hyderguda Post Office website and would like guidance about the ' +
-        activeScheme.title +
-        ' scheme before visiting the post office.'
-      )}`"
-      target="_blank"
-      class="block text-center bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold">
-      💬 Ask before visiting (WhatsApp)
+      'I want details about ' + activeScheme.title
+    )}`"
+       target="_blank"
+       class="block bg-green-600 text-white text-center py-3 rounded-lg">
+      💬 Ask on WhatsApp
     </a>
-
-    <p class="text-xs text-slate-400 mt-3">
-      WhatsApp is only for general guidance. Account opening and verification are done only at the Post Office.
-    </p>
   </div>
 </div>
 
@@ -147,89 +120,42 @@
 <script>
 function postOfficeApp() {
   return {
-    lang: 'en',
-    isModalOpen: false,
-    activeScheme: null,
-    userAmount: 0,
+    lang:'en',
+    isModalOpen:false,
+    activeScheme:null,
+    userAmount:1000,
+    activeCategory:null,
 
-    schemes: [
-      {
-        id:'SCSS',
-        title:'Senior Citizen Savings Scheme',
-        desc:'Quarterly income scheme',
-        who:'For citizens aged 60 years & above',
-        inputType:'lump',
-        defaultAmount:100000,
-        message:'Investing around ₹{amount} can help generate regular income.'
-      },
-      {
-        id:'SSY',
-        title:'Sukanya Samriddhi Yojana',
-        desc:'Savings for girl child',
-        who:'For parents of a girl child below 10 years',
-        inputType:'monthly',
-        defaultAmount:1000,
-        message:'Saving ₹{amount} every month helps build a secure future for your daughter.'
-      },
-      {
-        id:'PPF',
-        title:'Public Provident Fund',
-        desc:'Long-term tax-free savings',
-        who:'For long-term savings and retirement planning',
-        inputType:'monthly',
-        defaultAmount:1000,
-        message:'Contributing ₹{amount} every month supports long-term savings.'
-      },
-      {
-        id:'RD',
-        title:'Recurring Deposit',
-        desc:'Monthly savings scheme',
-        who:'For disciplined monthly savings',
-        inputType:'monthly',
-        defaultAmount:1000,
-        message:'Saving ₹{amount} every month builds disciplined saving habits.'
-      }
+    categories:[
+      {id:'senior', icon:'👴', label:'Senior Citizens', desc:'60 years & above'},
+      {id:'girl', icon:'👧', label:'Girl Child', desc:'Daughter’s future'},
+      {id:'income', icon:'💰', label:'Monthly Income', desc:'Regular income'},
+      {id:'tax', icon:'🧾', label:'Tax Saving', desc:'Tax benefits'},
+      {id:'general', icon:'🪙', label:'General Savings', desc:'Simple & safe'}
     ],
 
-    translations: {
-      en: {
-        govt_backed:'✔ Government of India Backed Savings Schemes',
-        site_title:'India Post Savings Schemes',
-        site_subtitle:'Understand schemes clearly and visit Hyderguda Post Office with confidence.',
-        site_note:'No agents • No market risk • Official information only',
-        our_schemes:'Our Savings Schemes'
-      },
-      te: {
-        govt_backed:'✔ ప్రభుత్వం మద్దతు ఉన్న పొదుపు పథకాలు',
-        site_title:'ఇండియా పోస్ట్ సేవింగ్స్ పథకాలు',
-        site_subtitle:'పథకాలను సులభంగా అర్థం చేసుకొని పోస్టాఫీసును సందర్శించండి.',
-        site_note:'ఏజెంట్లు లేరు • మార్కెట్ ప్రమాదం లేదు • అధికారిక సమాచారం మాత్రమే',
-        our_schemes:'మా పొదుపు పథకాలు'
-      }
+    schemes:[
+      {id:'SCSS',category:'senior',title:'Senior Citizen Savings Scheme',desc:'Quarterly income scheme',who:'For age 60+',message:'Investing ₹{amount} supports retirement income.'},
+      {id:'SSY',category:'girl',title:'Sukanya Samriddhi Yojana',desc:'Savings for girl child',who:'For parents of girl child',message:'Saving ₹{amount} monthly secures future.'},
+      {id:'MIS',category:'income',title:'Monthly Income Scheme',desc:'Fixed monthly income',who:'For regular income',message:'Investment of ₹{amount} gives monthly income.'},
+      {id:'PPF',category:'tax',title:'Public Provident Fund',desc:'Tax-free savings',who:'Long-term tax saving',message:'Saving ₹{amount} monthly builds corpus.'},
+      {id:'NSC',category:'tax',title:'National Savings Certificate',desc:'5-year savings',who:'Fixed term saving',message:'Deposit ₹{amount} for fixed term.'},
+      {id:'RD',category:'general',title:'Recurring Deposit',desc:'Monthly savings',who:'Disciplined saving',message:'Saving ₹{amount} monthly helps habit.'},
+      {id:'TD',category:'general',title:'Time Deposit',desc:'Fixed deposit',who:'Safe investment',message:'Deposit ₹{amount} for fixed returns.'},
+      {id:'KVP',category:'general',title:'Kisan Vikas Patra',desc:'Amount doubles',who:'Long-term growth',message:'Deposit ₹{amount} doubles over time.'}
+    ],
+
+    filteredSchemes(){
+      if(!this.activeCategory) return this.schemes;
+      return this.schemes.filter(s=>s.category===this.activeCategory);
     },
 
-    t(k){ return this.translations[this.lang][k] || k },
-    toggleLang(){ this.lang = this.lang === 'en' ? 'te' : 'en' },
+    toggleCategory(c){ this.activeCategory = this.activeCategory===c ? null : c; },
 
-    openModal(s){
-      this.activeScheme = s;
-      this.userAmount = s.defaultAmount;
-      this.isModalOpen = true;
-      history.pushState({modal:true}, '');
-    },
+    openModal(s){ this.activeScheme=s; this.isModalOpen=true; },
+    closeModal(){ this.isModalOpen=false; },
 
-    closeModal(){
-      this.isModalOpen = false;
-      this.activeScheme = null;
-      if(history.state?.modal) history.back();
-    },
-
-    initApp(){
-      window.addEventListener('popstate',()=>{
-        this.isModalOpen = false;
-        this.activeScheme = null;
-      });
-    }
+    t(k){return k}, toggleLang(){this.lang=this.lang==='en'?'te':'en'}, initApp(){}
   }
 }
 </script>
