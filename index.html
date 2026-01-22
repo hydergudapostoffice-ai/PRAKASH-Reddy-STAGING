@@ -70,30 +70,21 @@
        x-text="t('category_help')"></p>
 
     <div class="grid grid-cols-2 md:grid-cols-5 gap-3 text-sm">
-      <div class="border border-white/10l10 rounded p-3 text-center">
-        👴 <div class="font-semibold" x-text="t('cat_senior')"></div>
-        <div class="text-xs text-slate-400" x-text="t('cat_senior_desc')"></div>
-      </div>
 
-      <div class="border border-white/10 rounded p-3 text-center">
-        👧 <div class="font-semibold" x-text="t('cat_girl')"></div>
-        <div class="text-xs text-slate-400" x-text="t('cat_girl_desc')"></div>
-      </div>
+      <template x-for="cat in categories" :key="cat.id">
+        <div
+          @click="toggleCategory(cat.id)"
+          :class="activeCategory === cat.id
+            ? 'border-red-500 bg-white/10'
+            : 'border-white/10'"
+          class="border rounded p-3 text-center cursor-pointer transition">
 
-      <div class="border border-white/10 rounded p-3 text-center">
-        💰 <div class="font-semibold" x-text="t('cat_income')"></div>
-        <div class="text-xs text-slate-400" x-text="t('cat_income_desc')"></div>
-      </div>
+          <div x-text="cat.icon"></div>
+          <div class="font-semibold" x-text="t(cat.title)"></div>
+          <div class="text-xs text-slate-400" x-text="t(cat.desc)"></div>
+        </div>
+      </template>
 
-      <div class="border border-white/10 rounded p-3 text-center">
-        🧾 <div class="font-semibold" x-text="t('cat_tax')"></div>
-        <div class="text-xs text-slate-400" x-text="t('cat_tax_desc')"></div>
-      </div>
-
-      <div class="border border-white/10 rounded p-3 text-center">
-        🪙 <div class="font-semibold" x-text="t('cat_general')"></div>
-        <div class="text-xs text-slate-400" x-text="t('cat_general_desc')"></div>
-      </div>
     </div>
   </section>
 
@@ -103,7 +94,7 @@
         x-text="t('our_schemes')"></h3>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      <template x-for="scheme in schemes" :key="scheme.id">
+      <template x-for="scheme in filteredSchemes()" :key="scheme.id">
         <div @click="openModal(scheme)"
              class="border border-white/10 rounded-xl p-5 cursor-pointer hover:bg-white/5 transition">
           <h4 class="font-bold text-lg mb-1" x-text="scheme.title"></h4>
@@ -137,21 +128,6 @@
       <h3 class="text-xl font-bold mb-2" x-text="activeScheme?.title"></h3>
       <p class="text-sm text-slate-400 mb-4" x-text="activeScheme?.desc"></p>
 
-      <label class="text-xs font-bold" x-text="t('input_amount')"></label>
-      <input type="number" x-model="calcInput"
-             @input="validateAndCalculate()"
-             class="w-full mt-1 p-2 rounded bg-slate-800 border border-white/10">
-
-      <p class="text-xs text-red-400 mt-1" x-text="limitError"></p>
-
-      <div class="mt-4 text-sm">
-        <p class="font-semibold" x-text="calcResult.displayLabel"></p>
-        <p class="text-lg font-bold text-emerald-400"
-           x-text="calcResult.displayValue"></p>
-        <p class="text-xs text-slate-400 mt-2"
-           x-text="summaryText"></p>
-      </div>
-
       <p class="text-xs text-slate-400 mt-4"
          x-text="t('visit_po')"></p>
     </div>
@@ -165,10 +141,26 @@ function postOfficeApp() {
     lang: 'en',
     isModalOpen: false,
     activeScheme: null,
-    calcInput: 1000,
-    limitError: '',
-    calcResult: { displayLabel: '', displayValue: '' },
-    summaryText: '',
+    activeCategory: null,
+
+    categories: [
+      { id: 'senior', icon: '👴', title: 'cat_senior', desc: 'cat_senior_desc' },
+      { id: 'girl', icon: '👧', title: 'cat_girl', desc: 'cat_girl_desc' },
+      { id: 'income', icon: '💰', title: 'cat_income', desc: 'cat_income_desc' },
+      { id: 'tax', icon: '🧾', title: 'cat_tax', desc: 'cat_tax_desc' },
+      { id: 'general', icon: '🪙', title: 'cat_general', desc: 'cat_general_desc' }
+    ],
+
+    schemes: [
+      { id: 'SCSS', category: 'senior', title: 'Senior Citizen Savings Scheme', desc: 'Regular quarterly income for senior citizens', tag: 'Quarterly Income' },
+      { id: 'SSY', category: 'girl', title: 'Sukanya Samriddhi Yojana', desc: 'Long-term savings for girl child', tag: 'Tax Free' },
+      { id: 'MIS', category: 'income', title: 'Monthly Income Scheme', desc: 'Fixed monthly income', tag: 'Monthly Income' },
+      { id: 'PPF', category: 'tax', title: 'Public Provident Fund', desc: 'Long-term tax-free savings', tag: 'Tax Free' },
+      { id: 'NSC', category: 'tax', title: 'National Savings Certificate', desc: '5-year fixed term savings', tag: 'Tax Saving' },
+      { id: 'RD', category: 'general', title: 'Recurring Deposit', desc: 'Monthly savings for 5 years', tag: 'Monthly Savings' },
+      { id: 'TD', category: 'general', title: 'Time Deposit (5 Years)', desc: 'Fixed deposit with government backing', tag: 'Fixed Term' },
+      { id: 'KVP', category: 'general', title: 'Kisan Vikas Patra', desc: 'Amount doubles over fixed period', tag: 'Double Amount' }
+    ],
 
     translations: {
       en: {
@@ -188,7 +180,6 @@ function postOfficeApp() {
         cat_general: "General Savings",
         cat_general_desc: "Simple & safe savings",
         our_schemes: "Our Savings Schemes",
-        input_amount: "Investment Amount (₹)",
         visit_po: "For exact details, please visit the Post Office."
       },
       te: {
@@ -208,26 +199,42 @@ function postOfficeApp() {
         cat_general: "సాధారణ పొదుపు",
         cat_general_desc: "సురక్షిత పొదుపు మార్గాలు",
         our_schemes: "మా పొదుపు పథకాలు",
-        input_amount: "పెట్టే మొత్తం (₹)",
         visit_po: "ఖచ్చితమైన వివరాల కోసం మీ సమీప పోస్టాఫీసును సందర్శించండి."
       }
     },
 
-    schemes: [
-      { id: 'SCSS', title: 'Senior Citizen Savings Scheme', desc: 'Regular quarterly income for senior citizens', tag: 'Quarterly Income' },
-      { id: 'SSY', title: 'Sukanya Samriddhi Yojana', desc: 'Long-term savings for girl child', tag: 'Tax Free' },
-      { id: 'RD', title: 'Recurring Deposit', desc: 'Monthly savings for 5 years', tag: 'Monthly Savings' },
-      { id: 'PPF', title: 'Public Provident Fund', desc: 'Long-term tax-free savings', tag: 'Tax Free' },
-      { id: 'MIS', title: 'Monthly Income Scheme', desc: 'Fixed monthly income', tag: 'Monthly Income' },
-      { id: 'NSC', title: 'National Savings Certificate', desc: '5-year fixed term savings', tag: 'Tax Saving' },
-      { id: 'TD', title: 'Time Deposit (5 Years)', desc: 'Fixed deposit with government backing', tag: 'Fixed Term' },
-      { id: 'KVP', title: 'Kisan Vikas Patra', desc: 'Amount doubles over fixed period', tag: 'Double Amount' }
-    ],
-
     toggleLang() { this.lang = this.lang === 'en' ? 'te' : 'en'; },
     t(key) { return this.translations[this.lang][key] || key; },
-    openModal(s) { this.activeScheme = s; this.isModalOpen = true; },
-    closeModal() { this.isModalOpen = false; }
+
+    toggleCategory(cat) {
+      this.activeCategory = this.activeCategory === cat ? null : cat;
+    },
+
+    filteredSchemes() {
+      if (!this.activeCategory) return this.schemes;
+      return this.schemes.filter(s => s.category === this.activeCategory);
+    },
+
+    openModal(s) {
+      this.activeScheme = s;
+      this.isModalOpen = true;
+      history.pushState({ modal: true }, "");
+    },
+
+    closeModal() {
+      this.isModalOpen = false;
+      this.activeScheme = null;
+      if (history.state && history.state.modal) history.back();
+    },
+
+    initApp() {
+      window.addEventListener("popstate", () => {
+        if (this.isModalOpen) {
+          this.isModalOpen = false;
+          this.activeScheme = null;
+        }
+      });
+    }
   }
 }
 </script>
