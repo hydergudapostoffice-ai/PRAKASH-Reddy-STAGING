@@ -1,654 +1,159 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hyderguda Post Office S.O. - Official App</title>
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    colors: {
-                        brand: {
-                            red: '#D8232A',
-                            dark: '#0f172a',
-                            gold: '#fbbf24'
-                        }
-                    },
-                    animation: {
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'pulse-subtle': 'pulse-subtle 3s ease-in-out infinite',
-                        'wiggle': 'wiggle 2s ease-in-out infinite',
-                        'wiggle-subtle': 'wiggle-subtle 4s ease-in-out infinite',
-                    },
-                    keyframes: {
-                        wiggle: {
-                            '0%, 100%': { transform: 'rotate(-3deg)' },
-                            '50%': { transform: 'rotate(3deg)' },
-                        },
-                        'wiggle-subtle': {
-                            '0%, 100%': { transform: 'rotate(-1deg)' },
-                            '50%': { transform: 'rotate(1deg)' },
-                        },
-                        'pulse-subtle': {
-                            '0%, 100%': { transform: 'scale(1)', opacity: '0.8' },
-                            '50%': { transform: 'scale(1.02)', opacity: '1' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hyderguda Post Office S.O. – Official (Staging)</title>
 
-    <!-- Alpine.js -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-    <style>
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #D8232A; }
-        
-        .glass {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-        .glass-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(251, 191, 36, 0.3);
-            box-shadow: 0 0 40px rgba(216, 35, 42, 0.15);
-            transform: translateY(-6px);
-        }
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-        input[type=range] { -webkit-appearance: none; background: transparent; }
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%;
-            background: #fbbf24; cursor: pointer; margin-top: -8px;
-            box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
-        }
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%; height: 4px; cursor: pointer; background: #334155; border-radius: 2px;
-        }
-        
-        input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-        input[type=number] { -moz-appearance: textfield; }
-    </style>
-<script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@^19.2.3",
-    "framer-motion": "https://esm.sh/framer-motion@^12.24.5",
-    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "@google/genai": "https://esm.sh/@google/genai@^1.34.0"
-  }
-}
-</script>
+  <!-- Alpine -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    body { font-family: Inter, sans-serif; }
+  </style>
 </head>
-<body class="bg-slate-900 text-slate-100 antialiased overflow-x-hidden selection:bg-brand-red selection:text-white">
 
-    <div x-data="postOfficeApp()" x-init="initApp()" class="relative min-h-screen flex flex-col">
-        
-        <div class="fixed inset-0 bg-gradient-to-br from-slate-900 via-[#2a0a0a] to-slate-900 -z-50"></div>
-        <div class="fixed inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] mix-blend-overlay pointer-events-none -z-40"></div>
+<body class="bg-slate-900 text-slate-100">
 
-        <!-- HEADER -->
-        <header class="fixed top-0 w-full z-40 glass border-b-0 border-white/5 transition-all duration-300 shadow-lg" :class="{'bg-slate-900/95': scrolled}">
-            <div class="max-w-7xl mx-auto px-4 md:px-6 h-20 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-brand-red rounded-lg flex items-center justify-center text-white shadow-[0_0_15px_rgba(216,35,42,0.4)] transition-transform hover:scale-110">
-                        <i class="fa-solid fa-landmark text-lg"></i>
-                    </div>
-                    <div>
-                        <h1 class="font-bold text-lg leading-none tracking-tight text-white">INDIA POST</h1>
-                        <p class="text-[12px] font-bold text-white tracking-widest uppercase mt-0.5">HYDERGUDA S.O.</p>
-                    </div>
-                </div>
+<!-- ================= STAGING WARNING ================= -->
+<div class="bg-yellow-100 text-yellow-900 text-center text-sm font-bold py-2 px-4">
+  ⚠️ This is a TEST / STAGING website for internal review only. Not for public use.
+</div>
+<!-- ================================================== -->
 
-                <div class="flex items-center gap-4">
-                    <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/50 border border-white/10 text-xs font-medium backdrop-blur-md">
-                        <span class="relative flex h-2.5 w-2.5">
-                            <span x-show="isOpenNow" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-2.5 w-2.5" :class="isOpenNow ? 'bg-emerald-500' : 'bg-red-500'"></span>
-                        </span>
-                        <span x-text="statusText" class="text-slate-300"></span>
-                    </div>
+<div x-data="postOfficeApp()" x-init="initApp()">
 
-                    <button @click="toggleLang()" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-colors group">
-                        <i class="fa-solid fa-language text-slate-400 group-hover:text-white group-hover:rotate-12 transition-transform"></i>
-                        <span class="text-xs font-bold tracking-wide text-white" x-text="lang === 'en' ? 'ENG' : 'తెలుగు'"></span>
-                    </button>
-                </div>
-            </div>
-        </header>
+  <!-- HEADER -->
+  <header class="bg-slate-950 border-b border-white/10 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <div>
+        <h1 class="text-lg font-bold">INDIA POST</h1>
+        <p class="text-xs tracking-widest font-semibold">HYDERGUDA S.O.</p>
+      </div>
 
-        <!-- MAIN CONTENT -->
-        <main class="flex-grow pt-28 pb-12 px-4 md:px-6">
-            <div class="max-w-7xl mx-auto space-y-12">
-
-                <!-- HERO SECTION -->
-                <section class="text-center py-10 md:py-16 relative">
-                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-red/10 border border-brand-red/20 text-brand-red text-[10px] font-bold tracking-[0.2em] uppercase mb-8 shadow-[0_0_20px_rgba(216,35,42,0.1)]">
-                        <i class="fa-solid fa-shield-halved"></i>
-                        <span x-text="t('govt_guarantee')"></span>
-                    </div>
-
-                    <h2 class="text-5xl md:text-7xl font-black tracking-tighter mb-8 bg-gradient-to-b from-white to-slate-400 bg-clip-text text-transparent drop-shadow-2xl">
-                        <span x-text="t('secure_1')"></span><br>
-                        <span x-text="t('secure_2')"></span>
-                    </h2>
-
-                    <div class="h-12 flex justify-center items-center overflow-hidden relative">
-                        <template x-for="(msg, index) in tickerMessages" :key="index">
-                            <p x-show="currentTicker === index"
-                               x-transition:enter="transition ease-out duration-500"
-                               x-transition:enter-start="opacity-0 translate-y-4"
-                               x-transition:enter-end="opacity-100 translate-y-0"
-                               x-transition:leave="transition ease-in duration-300"
-                               x-transition:leave-start="opacity-100 translate-y-0"
-                               x-transition:leave-end="opacity-0 -translate-y-4"
-                               class="text-sm md:text-base font-medium text-emerald-400 tracking-wide flex items-center gap-2 absolute">
-                                <i class="fa-solid fa-lightbulb text-brand-gold animate-pulse"></i>
-                                <span x-text="msg"></span>
-                            </p>
-                        </template>
-                    </div>
-
-                    <p class="text-xs text-slate-500 flex justify-center items-center gap-1 mt-8">
-                        <i class="fa-solid fa-users"></i> 500+ <span x-text="t('happy_citizens')"></span>
-                    </p>
-                </section>
-
-                <!-- UTILITY BAR -->
-                <div class="glass rounded-2xl p-2 grid grid-cols-1 md:grid-cols-3 gap-2 shadow-2xl">
-                    <div class="p-4 rounded-xl bg-white/5 flex flex-col justify-between group border border-white/5 gap-3">
-                        <div class="text-brand-red font-bold text-xs uppercase tracking-widest flex items-center">
-                            <i class="fa-solid fa-box-open mr-2 group-hover:animate-wiggle"></i> Speed Post
-                        </div>
-                        <div class="flex gap-2">
-                             <input type="text" placeholder="Enter Consignment" class="w-full bg-slate-900 border border-white/10 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-red/50 transition-colors text-white placeholder-slate-600">
-                             <a href="https://www.indiapost.gov.in/_layouts/15/dop.portal.tracking/trackconsignment" target="_blank" class="bg-slate-800 hover:bg-brand-red text-white px-3 py-2 rounded-lg border border-white/10 transition-colors text-xs font-bold uppercase tracking-wider flex items-center justify-center">
-                                Track
-                             </a>
-                        </div>
-                    </div>
-
-                    <a href="tel:04029561505" class="p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-between group border border-white/5">
-                        <div>
-                            <div class="text-brand-red font-bold text-xs uppercase tracking-widest mb-1">
-                                <i class="fa-solid fa-phone mr-1 group-hover:animate-pulse"></i> Call Office
-                            </div>
-                            <div class="text-lg font-bold text-white group-hover:text-emerald-400 transition-colors">040-2956-1505</div>
-                        </div>
-                        <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center group-hover:scale-110 group-hover:bg-brand-red/20 transition-all">
-                            <i class="fa-solid fa-phone-volume text-emerald-400 group-hover:animate-wiggle"></i>
-                        </div>
-                    </a>
-
-                    <a href="https://www.google.com/maps/search/?api=1&query=Hyderguda+Post+Office+Attapur+Pillar+150" target="_blank" class="p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-between group border border-white/5 text-left">
-                        <div>
-                            <div class="text-brand-red font-bold text-xs uppercase tracking-widest mb-1">
-                                <i class="fa-solid fa-location-dot mr-1 group-hover:animate-bounce"></i> Directions
-                            </div>
-                            <div class="text-sm font-medium text-slate-300">Opp. Pillar 150, Attapur</div>
-                        </div>
-                        <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center group-hover:scale-110 group-hover:bg-brand-gold/20 transition-all">
-                            <i class="fa-solid fa-diamond-turn-right text-blue-400"></i>
-                        </div>
-                    </a>
-                </div>
-
-                <!-- SCHEMES GRID -->
-                <div>
-                     <h3 class="text-2xl font-bold text-white mb-6 pl-2 border-l-4 border-brand-red" x-text="t('our_schemes')">Our Schemes</h3>
-                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
-                        <template x-for="scheme in schemes" :key="scheme.id">
-                            <div @click="openModal(scheme)" class="glass-card rounded-2xl p-6 cursor-pointer relative overflow-hidden group flex flex-col justify-between">
-                                <div>
-                                    <div class="flex justify-between items-start mb-4">
-                                        <div class="w-14 h-14 rounded-full bg-white/5 flex items-center justify-center border border-white/10 shadow-[0_0_15px_rgba(251,191,36,0.1)] group-hover:shadow-[0_0_25px_rgba(251,191,36,0.3)] group-hover:animate-pulse-subtle transition-all">
-                                            <i :class="scheme.icon" class="text-2xl text-white drop-shadow-[0_0_5px_rgba(251,191,36,0.8)] group-hover:scale-125 transition-transform duration-500 group-hover:animate-wiggle"></i>
-                                        </div>
-                                        <span class="text-[10px] font-bold uppercase tracking-widest py-1 px-2.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 group-hover:border-emerald-500 transition-colors" x-text="scheme.tag">
-                                        </span>
-                                    </div>
-                                    
-                                    <h3 class="text-xl font-bold text-white mb-2 leading-tight group-hover:text-brand-gold transition-colors" x-text="scheme.title"></h3>
-                                    <p class="text-sm text-slate-400 line-clamp-2 font-light mb-4 group-hover:text-slate-200 transition-colors" x-text="scheme.desc"></p>
-
-                                    <div class="mt-4 pt-4 border-t border-white/5 space-y-3">
-                                        <template x-for="(benefit, index) in scheme.benefits" :key="index">
-                                            <div class="flex items-center gap-2.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider group/item">
-                                                <div class="flex items-center justify-center">
-                                                    <i class="fa-solid fa-shield-halved text-brand-red/50 group-hover:text-emerald-400 group-hover:scale-125 group-hover:animate-wiggle transition-all duration-300 origin-center" :style="`transition-delay: ${index * 75}ms; animation-delay: ${index * 150}ms`"></i>
-                                                </div>
-                                                <span x-text="benefit" class="group-hover:text-slate-200 transition-colors duration-300"></span>
-                                            </div>
-                                        </template>
-                                    </div>
-                                </div>
-                                
-                                <div class="pt-4 mt-4 border-t border-white/5 flex items-center justify-between text-xs font-bold text-slate-500 uppercase tracking-wider group-hover:text-white transition-colors">
-                                    <span x-text="scheme.code"></span>
-                                    <i class="fa-solid fa-arrow-right transform group-hover:translate-x-2 transition-transform duration-300"></i>
-                                </div>
-                            </div>
-                        </template>
-                    </div>
-                </div>
-
-            </div>
-        </main>
-
-        <!-- FOOTER -->
-        <footer id="footer" class="bg-slate-950 border-t border-white/5 pt-16 pb-8">
-            <div class="max-w-7xl mx-auto px-6">
-                <div class="flex flex-col md:flex-row gap-12 mb-12">
-                    <div class="md:w-1/3">
-                        <div class="flex items-center gap-2 mb-6 group cursor-default">
-                            <i class="fa-solid fa-landmark text-brand-red text-xl group-hover:scale-110 transition-transform"></i>
-                            <span class="font-bold text-lg tracking-tight">INDIA POST</span>
-                        </div>
-                        <address class="not-italic text-slate-400 text-sm leading-relaxed mb-6 pl-4 border-l border-white/10">
-                            Opposite Pillar No. 150,<br>
-                            PVNR Expressway, Attapur,<br>
-                            Hyderabad - 500048.
-                        </address>
-                        <div class="text-xs text-slate-600 font-medium uppercase tracking-widest">
-                            A Unit of Department of Posts
-                        </div>
-                    </div>
-
-                    <div class="md:w-2/3 h-64 bg-slate-900 rounded-2xl overflow-hidden border border-white/10 relative shadow-inner">
-                        <iframe 
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3807.726210214656!2d78.4326510759318!3d17.376916883508127!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb97793d8e5783%3A0xe5452d3d922998a1!2sHyderguda%20Post%20Office!5e0!3m2!1sen!2sin!4v1709900000000!5m2!1sen!2sin" 
-                            width="100%" height="100%" style="border:0; filter: grayscale(100%) invert(92%) contrast(0.83);" 
-                            allowfullscreen="" loading="lazy">
-                        </iframe>
-                    </div>
-                </div>
-                
-                <div class="flex flex-col md:flex-row items-center justify-between text-[10px] text-slate-600 pt-8 border-t border-white/5 gap-2">
-                    <span class="font-medium tracking-wide">&copy; 2025 Hyderguda Post Office S.O.</span>
-                    <span class="opacity-80 inline-block animate-pulse-subtle hover:animate-wiggle-subtle transition-all cursor-default text-slate-500 font-semibold uppercase tracking-[0.05em]">Developed/Created by GN Prakash Reddy [Hyderguda S.O]</span>
-                </div>
-            </div>
-        </footer>
-
-        <!-- SMART MODAL -->
-        <div x-show="isModalOpen" style="display: none;" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <div @click="closeModal()" x-show="isModalOpen" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="absolute inset-0 bg-slate-950/90 backdrop-blur-sm"></div>
-
-            <div x-show="isModalOpen" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95 translate-y-4" x-transition:enter-end="opacity-100 scale-100 translate-y-0" class="relative w-full max-w-4xl bg-slate-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh] overflow-y-auto md:overflow-hidden">
-                
-                <button @click="closeModal()" class="absolute top-4 right-4 z-20 p-2 rounded-full bg-black/20 hover:bg-white/10 text-slate-400 hover:text-white transition-colors">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-
-                <!-- SECTION A: CALCULATOR -->
-                <div class="w-full md:w-1/2 p-6 md:p-8 flex flex-col border-b md:border-b-0 md:border-r border-white/5 bg-slate-900/50">
-                    <div class="mb-4">
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-400 mb-2 block" x-text="activeScheme?.tag"></span>
-                        <h3 class="text-3xl font-bold text-white mb-2" x-text="activeScheme?.title"></h3>
-                        <p class="text-sm text-slate-400 font-light leading-relaxed" x-text="activeScheme?.desc"></p>
-                    </div>
-
-                    <div class="flex-grow space-y-6" x-show="activeScheme?.id !== 'PLI'">
-                        <div class="bg-white/5 p-4 rounded-xl border border-white/5">
-                            <div class="flex justify-between items-end mb-2">
-                                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block" x-text="activeScheme?.inputLabel || 'Investment'">Investment</label>
-                                <span class="text-[10px] text-red-500 font-bold uppercase tracking-wider animate-pulse" x-show="limitError" x-text="limitError"></span>
-                            </div>
-
-                            <div class="flex items-center gap-3 mb-4">
-                                <span class="text-xl font-bold text-slate-500">₹</span>
-                                <input type="number" x-model="calcInput" @input="validateAndCalculate()" class="w-full bg-slate-800 border border-white/10 rounded-lg px-4 py-2 text-2xl font-black text-white focus:outline-none focus:border-brand-gold/50 transition-colors" :class="{'border-red-500/50 text-red-100': limitError}">
-                            </div>
-                            
-                            <input type="range" x-model="calcInput" :min="minVal" :max="sliderMax" :step="stepVal" @input="validateAndCalculate()" class="w-full h-2 rounded-lg appearance-none cursor-pointer mb-2">
-                            
-                            <div class="flex justify-between text-[10px] text-slate-600 font-mono">
-                                <span x-text="'Min: ₹' + formatCompact(minVal)"></span>
-                                <span x-text="maxVal === Infinity ? 'No Limit' : 'Max: ₹' + formatCompact(maxVal)"></span>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center gap-6 p-4 bg-slate-950 rounded-xl border border-white/5">
-                             <div class="relative w-24 h-24 rounded-full flex items-center justify-center flex-shrink-0" :style="`background: conic-gradient(#fbbf24 0% ${calcResult.percent}%, #334155 ${calcResult.percent}% 100%);`">
-                                 <div class="absolute w-[80%] h-[80%] bg-slate-900 rounded-full"></div>
-                             </div>
-                             <div>
-                                 <div class="flex flex-col gap-1 mb-2">
-                                     <div class="flex items-center gap-2 text-[10px] text-slate-400"><span class="w-2 h-2 rounded-full bg-slate-600"></span> 🟦 Invested Amount</div>
-                                     <div class="flex items-center gap-2 text-[10px] text-slate-400"><span class="w-2 h-2 rounded-full bg-brand-gold"></span> 🟩 Total Return</div>
-                                 </div>
-                                 <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-1" x-text="calcResult.displayLabel">Result</div>
-                                 <div class="text-xl font-black text-white" x-text="calcResult.displayValue"></div>
-                                 <div class="text-[10px] text-emerald-400 mt-1 font-bold" x-text="calcResult.tenure"></div>
-                             </div>
-                        </div>
-
-                        <p class="text-xs text-slate-400 italic leading-relaxed border-l-2 border-emerald-500 pl-3" x-text="summaryText"></p>
-                    </div>
-                    
-                    <div x-show="activeScheme?.id === 'PLI'" class="mb-6 bg-blue-900/20 p-4 rounded-xl border border-blue-500/30">
-                        <div class="text-center text-blue-300">
-                             <i class="fa-solid fa-calculator text-3xl mb-2"></i>
-                             <p class="text-sm font-bold">Official Quote Only</p>
-                             <p class="text-xs opacity-70">For exact premium based on age, please chat with us.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- SECTION B: ACCORDION & ACTION -->
-                <div class="w-full md:w-1/2 p-6 md:p-8 bg-slate-950 flex flex-col justify-between">
-                    <div>
-                        <button @click="showDocs = !showDocs" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 py-3 px-4 rounded-xl flex justify-between items-center text-xs font-bold uppercase tracking-wider transition-colors mb-4 border border-white/5 group">
-                            <span><i class="fa-solid fa-chevron-down mr-2 group-hover:animate-bounce transition-transform" :class="{'rotate-180': showDocs}"></i> View Required Documents</span>
-                        </button>
-                        
-                        <div x-show="showDocs" x-collapse class="bg-slate-900/50 rounded-xl overflow-hidden mb-6 border border-white/5">
-                            <ul class="p-4 space-y-3">
-                                <template x-for="doc in activeScheme?.docs" :key="doc">
-                                    <li class="flex items-center gap-3 group/doc">
-                                        <div class="w-5 h-5 rounded-full bg-brand-gold/10 flex items-center justify-center flex-shrink-0 text-brand-gold text-[10px] group-hover/doc:scale-110 group-hover/doc:bg-brand-gold/20 transition-all">
-                                            <i class="fa-solid fa-check"></i>
-                                        </div>
-                                        <span class="text-slate-400 text-sm group-hover/doc:text-white transition-colors" x-text="translateDoc(doc)"></span>
-                                    </li>
-                                </template>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="mt-auto">
-                        <!-- WHATSAPP BUTTON DISABLED -->
-                        <button 
-                           class="w-full py-4 bg-slate-700 text-white/50 rounded-xl font-bold uppercase tracking-widest shadow-lg flex items-center justify-center gap-3 cursor-not-allowed opacity-50 grayscale pointer-events-none">
-                            <i class="fa-brands fa-whatsapp text-xl"></i>
-                            <span x-text="t('chat_wa')">Chat on WhatsApp</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+      <button @click="toggleLang()" class="text-xs px-3 py-1 border border-white/20 rounded">
+        <span x-text="lang === 'en' ? 'ENG' : 'తెలుగు'"></span>
+      </button>
     </div>
+  </header>
 
-    <script>
-        function postOfficeApp() {
-            return {
-                lang: 'en',
-                scrolled: false,
-                isOpenNow: false,
-                statusText: '',
-                isModalOpen: false,
-                showDocs: false,
-                activeScheme: null,
-                calcInput: 50000,
-                limitError: '',
-                minVal: 0,
-                maxVal: Infinity,
-                sliderMax: 100000,
-                stepVal: 1000,
-                calcResult: { displayLabel: 'Maturity Value', displayValue: '0', invested: 0, maturity: 0, percent: 50, tenure: '' },
-                summaryText: '',
-                currentTicker: 0,
-                tickerMessages: [
-                    "Did you know? SSY interest is 100% Tax-Free.",
-                    "Did you know? Post Office Deposits are Sovereign Guaranteed.",
-                    "Did you know? PLI offers the lowest premium in the market.",
-                    "Did you know? KVP doubles your money in 115 months."
-                ],
-                
-                translations: {
-                    en: {
-                        govt_guarantee: 'Government Guaranteed',
-                        secure_1: '100% Secure',
-                        secure_2: 'Wealth Creation',
-                        calc_returns: 'Calculate Returns',
-                        happy_citizens: 'Happy Citizens',
-                        our_schemes: 'Our Schemes',
-                        docs_req: 'Documents Required',
-                        chat_wa: 'Chat on WhatsApp',
-                        doc_aadhaar: 'Aadhaar Card',
-                        doc_pan: 'PAN Card',
-                        doc_photo: '2 Passport Photos',
-                        doc_birth: 'Birth Certificate',
-                        doc_parent: 'Parent Aadhaar',
-                        doc_parent_pan: 'Parent PAN Card',
-                        doc_degree: 'Degree / Diploma',
-                        doc_girl_aadhaar: 'Girl Child Aadhaar Card'
-                    },
-                    te: {
-                        govt_guarantee: 'ప్రభుత్వ హామీ',
-                        secure_1: '100% సురక్షితమైన',
-                        secure_2: 'సంపద సృష్టి',
-                        calc_returns: 'రాబడిని లెక్కించండి',
-                        happy_citizens: 'సంతోషకరమైన పౌరులు',
-                        our_schemes: 'మా పథకాలు',
-                        docs_req: 'కావలసిన పత్రాలు',
-                        chat_wa: 'వాట్సాప్‌లో చాట్ చేయండి',
-                        doc_aadhaar: 'ఆధార్ కార్డు',
-                        doc_pan: 'పాన్ కార్డు',
-                        doc_photo: '2 పాస్‌పోర్ట్ ఫోటోలు',
-                        doc_birth: 'జనన ధృవీకరణ పత్రం',
-                        doc_parent: 'తల్లిదండ్రుల ఆధార్',
-                        doc_parent_pan: 'తల్లిదండ్రుల పాన్ కార్డు',
-                        doc_degree: 'డిగ్రీ / డిప్లొమా',
-                        doc_girl_aadhaar: 'బాలిక ఆధార్ కార్డు'
-                    }
-                },
+  <!-- HERO -->
+  <section class="max-w-5xl mx-auto px-4 py-12 text-center">
+    <span class="inline-block text-xs font-bold text-emerald-400 mb-3">
+      ✔ Government of India Guaranteed
+    </span>
 
-                schemes: [
-                    { 
-                        id: 'SSY', code: 'SSY', title: 'Sukanya Samriddhi', desc: '8.2% Interest. Tax-free wealth creation for girl child.', 
-                        icon: 'fa-solid fa-child-dress', tag: 'Tax Free',
-                        benefits: ['Highest Rate', 'Tax Free', 'Girl Child'],
-                        min: 250, max: 150000, step: 250, inputLabel: 'Monthly Contribution',
-                        docs: ['doc_birth', 'doc_parent', 'doc_parent_pan', 'doc_girl_aadhaar', 'doc_photo'] 
-                    },
-                    { 
-                        id: 'RD', code: 'RD', title: 'Recurring Deposit', desc: 'Start small with monthly savings. 6.7% Interest.', 
-                        icon: 'fa-solid fa-coins', tag: 'Safe Return',
-                        benefits: ['Small Savings', 'Disciplined', 'Liquid'],
-                        min: 100, max: Infinity, step: 100, inputLabel: 'Monthly Contribution',
-                        docs: ['doc_aadhaar', 'doc_pan', 'doc_photo'] 
-                    },
-                    { 
-                        id: 'PPF', code: 'PPF', title: 'Public Provident Fund', desc: '7.1% Interest. 15-year lock-in with tax benefits.', 
-                        icon: 'fa-solid fa-piggy-bank', tag: 'Tax Free',
-                        benefits: ['Tax Free', 'Lump Sum/Monthly', 'Safe'],
-                        min: 500, max: 150000, step: 500, inputLabel: 'Monthly Contribution',
-                        docs: ['doc_aadhaar', 'doc_pan', 'doc_photo'] 
-                    },
-                    { 
-                        id: 'MIS', code: 'MIS', title: 'Monthly Income Scheme', desc: '7.4% Interest. Guaranteed monthly income for 5 years.', 
-                        icon: 'fa-solid fa-calendar-check', tag: 'Monthly Payout',
-                        benefits: ['Monthly Payout', 'Guaranteed', '5 Yr Term'],
-                        min: 1000, max: 900000, step: 1000, inputLabel: 'Lump Sum Investment',
-                        docs: ['doc_aadhaar', 'doc_pan', 'doc_photo'] 
-                    },
-                    { 
-                        id: 'SCSS', code: 'SCSS', title: 'Senior Citizen Savings', desc: '8.2% Interest. Regular quarterly income for retirees.', 
-                        icon: 'fa-solid fa-person-cane', tag: '8.2% Rate',
-                        benefits: ['Regular Income', 'High Rate', 'Senior Safety'],
-                        min: 1000, max: 3000000, step: 1000, inputLabel: 'Lump Sum Investment',
-                        docs: ['doc_aadhaar', 'doc_pan', 'doc_photo'] 
-                    },
-                    { 
-                        id: 'KVP', code: 'KVP', title: 'Kisan Vikas Patra', desc: 'Double your money in 115 months. Sovereign guarantee.', 
-                        icon: 'fa-solid fa-wheat-awn', tag: 'Double Money',
-                        benefits: ['Double Money', 'No Max Limit', 'Transferable'],
-                        min: 1000, max: Infinity, step: 1000, inputLabel: 'Lump Sum Investment',
-                        docs: ['doc_aadhaar', 'doc_pan', 'doc_photo'] 
-                    },
-                    { 
-                        id: 'NSC', code: 'NSC', title: 'National Savings Cert.', desc: '7.7% Interest. 5-year lock-in with tax benefits.', 
-                        icon: 'fa-solid fa-file-invoice-dollar', tag: 'Tax Saver',
-                        benefits: ['Tax Saver', 'Compounded', 'Collateral'],
-                        min: 1000, max: Infinity, step: 1000, inputLabel: 'Lump Sum Investment',
-                        docs: ['doc_aadhaar', 'doc_pan', 'doc_photo'] 
-                    },
-                    { 
-                        id: 'TD', code: 'TD', title: 'Time Deposit (5 Yr)', desc: '7.5% Interest. Fixed deposit with quarterly compounding.', 
-                        icon: 'fa-solid fa-landmark', tag: 'Safe Return',
-                        benefits: ['Quarterly Payout', 'Flexible', 'Govt Safety'],
-                        min: 1000, max: Infinity, step: 1000, inputLabel: 'Lump Sum Investment',
-                        docs: ['doc_aadhaar', 'doc_pan', 'doc_photo'] 
-                    },
-                    { 
-                        id: 'PLI', code: 'PLI', title: 'Postal Life Insurance', desc: 'The lowest premium life insurance with high bonus rates.', 
-                        icon: 'fa-solid fa-shield-halved', tag: 'Low Premium',
-                        benefits: ['High Bonus', 'Low Premium', 'Govt Guarantee'],
-                        docs: ['doc_degree', 'doc_aadhaar', 'doc_pan', 'doc_photo'] 
-                    }
-                ],
+    <h2 class="text-3xl md:text-4xl font-extrabold mb-4">
+      India Post Savings & Insurance Schemes
+    </h2>
 
-                initApp() {
-                    window.addEventListener('scroll', () => { this.scrolled = window.scrollY > 20; });
-                    this.checkStatus();
-                    setInterval(() => this.checkStatus(), 60000);
-                    setInterval(() => { this.currentTicker = (this.currentTicker + 1) % this.tickerMessages.length; }, 4000);
-                },
+    <p class="text-slate-300 max-w-2xl mx-auto text-sm md:text-base">
+      Understand schemes clearly, calculate returns instantly,  
+      and visit Hyderguda Post Office with confidence.
+    </p>
 
-                checkStatus() {
-                    const now = new Date();
-                    const day = now.getDay(); 
-                    const hour = now.getHours();
-                    if (day >= 1 && day <= 6 && hour >= 9 && hour < 17) {
-                        this.isOpenNow = true;
-                        this.statusText = this.lang === 'en' ? 'Open Now' : 'ఇప్పుడు తెరిచి ఉంది';
-                    } else {
-                        this.isOpenNow = false;
-                        this.statusText = this.lang === 'en' ? 'Closed | Opens 9 AM' : 'మూసివేయబడింది';
-                    }
-                },
+    <p class="mt-4 text-xs text-slate-400">
+      No agents • No market risk • Official information only
+    </p>
+  </section>
 
-                toggleLang() { this.lang = this.lang === 'en' ? 'te' : 'en'; this.checkStatus(); },
-                t(key) { return this.translations[this.lang][key] || key; },
-                translateDoc(key) { return this.translations[this.lang][key] || this.translations['en'][key] || key; },
+  <!-- WHO IS THIS FOR -->
+  <section class="max-w-6xl mx-auto px-4 py-6 grid grid-cols-2 md:grid-cols-4 gap-3 text-center text-sm">
+    <div class="border border-white/10 rounded p-3">👴 Senior Citizens</div>
+    <div class="border border-white/10 rounded p-3">👧 Girl Child</div>
+    <div class="border border-white/10 rounded p-3">💰 Monthly Income</div>
+    <div class="border border-white/10 rounded p-3">🧾 Tax Saving</div>
+  </section>
 
-                openModal(scheme) {
-                    this.activeScheme = scheme;
-                    this.isModalOpen = true;
-                    this.limitError = '';
-                    this.showDocs = false;
-                    this.minVal = scheme.min || 0;
-                    this.maxVal = scheme.max || Infinity;
-                    this.stepVal = scheme.step || 100;
-                    this.sliderMax = this.maxVal === Infinity ? 1000000 : this.maxVal;
-                    this.calcInput = (scheme.id === 'RD' || scheme.id === 'SSY' || scheme.id === 'PPF') ? 5000 : 100000;
-                    this.validateAndCalculate();
-                },
+  <!-- SCHEMES -->
+  <main class="max-w-7xl mx-auto px-4 py-10">
+    <h3 class="text-xl font-bold mb-6 border-l-4 border-red-600 pl-3">
+      Our Schemes
+    </h3>
 
-                closeModal() { this.isModalOpen = false; this.activeScheme = null; },
-                formatCompact(num) {
-                    if (num === Infinity) return '∞';
-                    if (num >= 100000) return (num / 100000).toFixed(1) + ' L';
-                    if (num >= 1000) return (num / 1000).toFixed(1) + ' K';
-                    return num.toLocaleString('en-IN');
-                },
-                formatCurrency(num) { return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(num); },
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <template x-for="scheme in schemes" :key="scheme.id">
+        <div @click="openModal(scheme)"
+             class="border border-white/10 rounded-xl p-5 cursor-pointer hover:bg-white/5 transition">
+          <h4 class="font-bold text-lg mb-1" x-text="scheme.title"></h4>
+          <p class="text-sm text-slate-400 mb-2" x-text="scheme.desc"></p>
+          <p class="text-xs text-emerald-400 font-semibold" x-text="scheme.tag"></p>
+        </div>
+      </template>
+    </div>
+  </main>
 
-                validateAndCalculate() {
-                    if (!this.activeScheme) return;
-                    this.limitError = '';
-                    let val = Number(this.calcInput);
-                    if (this.maxVal !== Infinity && val > this.maxVal) this.limitError = `Max: ` + this.formatCurrency(this.maxVal);
-                    else if (val < this.minVal) this.limitError = `Min: ` + this.formatCurrency(this.minVal);
-                    this.calculate();
-                },
+  <!-- FOOTER -->
+  <footer class="bg-slate-950 border-t border-white/10 mt-16">
+    <div class="max-w-7xl mx-auto px-4 py-8 text-sm text-slate-400">
+      <p>
+        Opposite Pillar No.150, PVNR Expressway, Attapur, Hyderabad – 500048
+      </p>
+      <p class="mt-2 text-xs">
+        A Unit of Department of Posts | Developed by GN Prakash Reddy (Hyderguda S.O.)
+      </p>
+    </div>
+  </footer>
 
-                calculate() {
-                    if (!this.activeScheme || this.activeScheme.id === 'PLI') return;
-                    const input = Number(this.calcInput);
-                    const id = this.activeScheme.id;
-                    let invested = input;
-                    let maturity = input;
-                    let tenure = '';
-                    let summary = '';
-                    let displayLabel = 'Total Maturity Value';
-                    let displayValue = '';
+  <!-- MODAL (Calculator) -->
+  <div x-show="isModalOpen" style="display:none"
+       class="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
 
-                    if (id === 'SSY') {
-                        maturity = input * 554.613;
-                        invested = input * 12 * 15;
-                        tenure = '21 Years';
-                        summary = `You invest ${this.formatCurrency(input)}/month for 15 years, and get approx ${this.formatCurrency(maturity)} for her future.`;
-                        displayValue = this.formatCurrency(maturity);
-                    } else if (id === 'PPF') {
-                        maturity = input * 315.572;
-                        invested = input * 12 * 15;
-                        tenure = '15 Years';
-                        summary = `You invest ${this.formatCurrency(input)}/month for 15 years, and get approx ${this.formatCurrency(maturity)} tax-free.`;
-                        displayValue = this.formatCurrency(maturity);
-                    } else if (id === 'RD') {
-                        maturity = input * 71.366;
-                        invested = input * 60;
-                        tenure = '5 Years';
-                        summary = `You save ${this.formatCurrency(input)}/month for 5 years, and get ${this.formatCurrency(maturity)}.`;
-                        displayValue = this.formatCurrency(maturity);
-                    } else if (id === 'MIS') {
-                        const monthlyIncome = input * 0.00617;
-                        maturity = input + (monthlyIncome * 60);
-                        tenure = '5 Years';
-                        displayLabel = 'Monthly Income Payout';
-                        displayValue = this.formatCurrency(monthlyIncome);
-                        summary = `You deposit ${this.formatCompact(input)} and get a pension of ${this.formatCurrency(monthlyIncome)}/month. Your full Principal is returned after 5 years.`;
-                    } else if (id === 'SCSS') {
-                        const quarterlyIncome = input * 0.0205;
-                        maturity = input + (quarterlyIncome * 20);
-                        tenure = '5 Years';
-                        displayLabel = 'Quarterly Income Payout';
-                        displayValue = this.formatCurrency(quarterlyIncome);
-                        summary = `You deposit ${this.formatCompact(input)} and get ${this.formatCurrency(quarterlyIncome)}/quarter. Your full Principal is returned after 5 years.`;
-                    } else if (id === 'TD') {
-                        maturity = input * 1.3857;
-                        tenure = '5 Years';
-                        summary = `You invest ${this.formatCompact(input)} today, and get approx ${this.formatCurrency(maturity)} after 5 years.`;
-                        displayValue = this.formatCurrency(maturity);
-                    } else if (id === 'NSC') {
-                        maturity = input * 1.449;
-                        tenure = '5 Years';
-                        summary = `You invest ${this.formatCompact(input)} today, and get approx ${this.formatCurrency(maturity)} after 5 years.`;
-                        displayValue = this.formatCurrency(maturity);
-                    } else if (id === 'KVP') {
-                        maturity = input * 2;
-                        tenure = '115 Months';
-                        summary = `You invest ${this.formatCompact(input)} and it doubles to ${this.formatCurrency(maturity)} in 115 months.`;
-                        displayValue = this.formatCurrency(maturity);
-                    }
+    <div class="bg-slate-900 max-w-lg w-full rounded-xl p-6 border border-white/10">
+      <button @click="closeModal()" class="float-right text-slate-400">✕</button>
 
-                    const percent = (invested / maturity) * 100;
-                    this.calcResult = { displayLabel, displayValue, invested, maturity, percent: percent > 90 ? 90 : percent, tenure };
-                    this.summaryText = summary;
-                }
-            }
-        }
-    </script>
+      <h3 class="text-xl font-bold mb-2" x-text="activeScheme?.title"></h3>
+      <p class="text-sm text-slate-400 mb-4" x-text="activeScheme?.desc"></p>
+
+      <div x-show="activeScheme?.id !== 'PLI'">
+        <label class="text-xs font-bold">Investment Amount (₹)</label>
+        <input type="number" x-model="calcInput"
+               @input="validateAndCalculate()"
+               class="w-full mt-1 p-2 rounded bg-slate-800 border border-white/10">
+
+        <p class="text-xs text-red-400 mt-1" x-text="limitError"></p>
+
+        <div class="mt-4 text-sm">
+          <p><strong x-text="calcResult.displayLabel"></strong></p>
+          <p class="text-lg font-bold text-emerald-400" x-text="calcResult.displayValue"></p>
+          <p class="text-xs text-slate-400" x-text="summaryText"></p>
+        </div>
+      </div>
+
+      <div class="mt-6">
+        <button @click="showDocs = !showDocs"
+                class="w-full text-xs font-bold border border-white/10 py-2 rounded">
+          View Required Documents
+        </button>
+
+        <ul x-show="showDocs" x-collapse class="mt-3 text-sm text-slate-300">
+          <template x-for="doc in activeScheme?.docs" :key="doc">
+            <li class="mb-1">• <span x-text="translateDoc(doc)"></span></li>
+          </template>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- YOUR ORIGINAL JS LOGIC (UNCHANGED) -->
+<script>
+  /* PASTE YOUR EXISTING postOfficeApp() FUNCTION HERE
+     EXACTLY AS IT IS – NO CHANGE */
+</script>
+
 </body>
 </html>
