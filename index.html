@@ -23,64 +23,92 @@
 
 <body class="bg-slate-900 text-slate-100">
 
+<!-- STAGING WARNING -->
 <div class="bg-yellow-100 text-yellow-900 text-center text-sm font-bold py-2 px-4">
-  ⚠️ This is a TEST / STAGING website for internal review only.
+  ⚠️ This is a TEST / STAGING website for internal review only. Not for public use.
 </div>
 
 <div x-data="postOfficeApp()" x-init="initApp()">
 
+<!-- HEADER -->
 <header class="bg-slate-950 border-b border-white/10 sticky top-0 z-40">
-  <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+  <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
     <div>
       <h1 class="text-lg font-bold">INDIA POST</h1>
       <p class="text-xs tracking-widest font-semibold">HYDERGUDA S.O.</p>
     </div>
-    <button @click="toggleLang()" class="text-xs px-3 py-1 border border-white/20 rounded">
+    <button @click="toggleLang()"
+            class="text-xs px-3 py-1 border border-white/20 rounded">
       <span x-text="lang === 'en' ? 'ENG' : 'తెలుగు'"></span>
     </button>
   </div>
 </header>
 
-<section class="max-w-5xl mx-auto px-4 py-10 text-center">
-  <span class="text-xs font-bold text-emerald-400" x-text="t('govt_backed')"></span>
-  <h2 class="text-3xl font-extrabold mt-3" x-text="t('site_title')"></h2>
-  <p class="text-slate-300 mt-2" x-text="t('site_subtitle')"></p>
+<!-- HERO -->
+<section class="max-w-5xl mx-auto px-4 py-14 text-center">
+  <span class="inline-block text-xs font-bold text-emerald-400 mb-4"
+        x-text="t('govt_backed')"></span>
+
+  <h2 class="text-3xl md:text-4xl font-extrabold mb-4"
+      x-text="t('site_title')"></h2>
+
+  <p class="text-slate-300 max-w-2xl mx-auto text-sm md:text-base"
+     x-text="t('site_subtitle')"></p>
+
+  <p class="mt-4 text-xs text-slate-400"
+     x-text="t('site_note')"></p>
 </section>
 
-<section class="max-w-5xl mx-auto px-4 pb-6 grid grid-cols-2 gap-3 text-sm">
+<!-- UTILITIES -->
+<section class="max-w-5xl mx-auto px-4 pb-10 grid grid-cols-2 gap-4 text-sm">
   <a href="https://www.google.com/maps/search/?api=1&query=Hyderguda+Post+Office+Attapur"
      target="_blank"
-     class="border border-white/10 rounded p-3 text-center">📍 Get Directions</a>
+     class="border border-white/10 rounded-lg p-4 text-center hover:bg-white/5">
+    📍 <div class="font-semibold mt-1">Get Directions</div>
+  </a>
 
   <a href="tel:04029561505"
-     class="border border-white/10 rounded p-3 text-center">☎ Call Post Office</a>
+     class="border border-white/10 rounded-lg p-4 text-center hover:bg-white/5">
+    ☎ <div class="font-semibold mt-1">Call Post Office</div>
+  </a>
 </section>
 
-<main class="max-w-7xl mx-auto px-4 py-10">
+<!-- SCHEMES -->
+<main class="max-w-6xl mx-auto px-4 pb-16">
   <h3 id="schemesSection"
-      class="text-xl font-bold border-l-4 border-red-600 pl-3"
+      class="text-xl font-bold mb-6 border-l-4 border-red-600 pl-3"
       x-text="t('our_schemes')"></h3>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
     <template x-for="scheme in schemes" :key="scheme.id">
       <div @click="openModal(scheme)"
-           class="border border-white/10 rounded-xl p-5 cursor-pointer hover:bg-white/5">
-        <h4 class="font-bold text-lg" x-text="scheme.title"></h4>
+           class="border border-white/10 rounded-xl p-6 cursor-pointer hover:bg-white/5 transition">
+        <h4 class="font-bold text-lg mb-1" x-text="scheme.title"></h4>
         <p class="text-sm text-slate-400" x-text="scheme.desc"></p>
       </div>
     </template>
   </div>
 </main>
 
+<!-- FOOTER -->
+<footer class="bg-slate-950 border-t border-white/10">
+  <div class="max-w-6xl mx-auto px-4 py-8 text-sm text-slate-400">
+    <p>Opposite Pillar No.150, PVNR Expressway, Attapur, Hyderabad – 500048</p>
+    <p class="mt-2 text-xs">
+      A Unit of Department of Posts | Developed by GN Prakash Reddy (Hyderguda S.O.)
+    </p>
+  </div>
+</footer>
+
 <!-- MODAL -->
 <div x-show="isModalOpen" style="display:none"
      class="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
 
   <div class="bg-slate-900 max-w-lg w-full rounded-xl p-6 border border-white/10">
-    <button @click="closeModal()" class="float-right">✕</button>
+    <button @click="closeModal()" class="float-right text-slate-400">✕</button>
 
     <h3 class="text-xl font-bold mb-1" x-text="activeScheme?.title"></h3>
-    <p class="text-sm text-slate-400 mb-2" x-text="activeScheme?.desc"></p>
+    <p class="text-sm text-slate-400 mb-3" x-text="activeScheme?.desc"></p>
 
     <p class="text-sm text-emerald-400 mb-4" x-text="activeScheme?.who"></p>
 
@@ -92,25 +120,24 @@
 
     <input type="number"
            x-model="userAmount"
-           class="w-full mt-1 mb-3 p-2 rounded bg-slate-800 border border-white/10" />
+           class="w-full mt-1 mb-4 p-2 rounded bg-slate-800 border border-white/10" />
 
     <p class="text-sm text-slate-300 mb-4"
        x-text="activeScheme?.message.replace('{amount}', '₹' + userAmount)"></p>
 
     <!-- WHATSAPP -->
-    <a
-      :href="`https://wa.me/919347133286?text=${encodeURIComponent(
-        'Hello, I visited the Hyderguda Post Office website and would like clarification about the ' +
+    <a :href="`https://wa.me/919347133286?text=${encodeURIComponent(
+        'Hello, I visited the Hyderguda Post Office website and would like guidance about the ' +
         activeScheme.title +
-        ' account before visiting the post office.'
+        ' scheme before visiting the post office.'
       )}`"
       target="_blank"
-      class="block text-center bg-green-600 text-white py-2 rounded">
+      class="block text-center bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold">
       💬 Ask before visiting (WhatsApp)
     </a>
 
-    <p class="text-xs text-slate-400 mt-2">
-      WhatsApp is only for general guidance. Account opening is done only at the Post Office.
+    <p class="text-xs text-slate-400 mt-3">
+      WhatsApp is only for general guidance. Account opening and verification are done only at the Post Office.
     </p>
   </div>
 </div>
@@ -126,35 +153,58 @@ function postOfficeApp() {
     userAmount: 0,
 
     schemes: [
-      { id:'SCSS', title:'Senior Citizen Savings Scheme', desc:'Quarterly income scheme',
-        who:'For citizens aged 60 years & above', inputType:'lump', defaultAmount:100000,
-        message:'Investing around ₹{amount} can help generate regular income.' },
-
-      { id:'SSY', title:'Sukanya Samriddhi Yojana', desc:'Savings for girl child',
-        who:'For parents of a girl child below 10 years', inputType:'monthly', defaultAmount:1000,
-        message:'Saving ₹{amount} every month helps build a secure future.' },
-
-      { id:'PPF', title:'Public Provident Fund', desc:'Long-term tax-free savings',
-        who:'For long-term savings and tax planning', inputType:'monthly', defaultAmount:1000,
-        message:'Contributing ₹{amount} every month supports long-term savings.' },
-
-      { id:'RD', title:'Recurring Deposit', desc:'Monthly savings scheme',
-        who:'For disciplined monthly savings', inputType:'monthly', defaultAmount:1000,
-        message:'Saving ₹{amount} every month builds strong saving habits.' }
+      {
+        id:'SCSS',
+        title:'Senior Citizen Savings Scheme',
+        desc:'Quarterly income scheme',
+        who:'For citizens aged 60 years & above',
+        inputType:'lump',
+        defaultAmount:100000,
+        message:'Investing around ₹{amount} can help generate regular income.'
+      },
+      {
+        id:'SSY',
+        title:'Sukanya Samriddhi Yojana',
+        desc:'Savings for girl child',
+        who:'For parents of a girl child below 10 years',
+        inputType:'monthly',
+        defaultAmount:1000,
+        message:'Saving ₹{amount} every month helps build a secure future for your daughter.'
+      },
+      {
+        id:'PPF',
+        title:'Public Provident Fund',
+        desc:'Long-term tax-free savings',
+        who:'For long-term savings and retirement planning',
+        inputType:'monthly',
+        defaultAmount:1000,
+        message:'Contributing ₹{amount} every month supports long-term savings.'
+      },
+      {
+        id:'RD',
+        title:'Recurring Deposit',
+        desc:'Monthly savings scheme',
+        who:'For disciplined monthly savings',
+        inputType:'monthly',
+        defaultAmount:1000,
+        message:'Saving ₹{amount} every month builds disciplined saving habits.'
+      }
     ],
 
     translations: {
       en: {
-        govt_backed: "✔ Government of India Backed Savings Schemes",
-        site_title: "India Post Savings Schemes",
-        site_subtitle: "Understand schemes clearly and visit Hyderguda Post Office with confidence.",
-        our_schemes: "Our Savings Schemes"
+        govt_backed:'✔ Government of India Backed Savings Schemes',
+        site_title:'India Post Savings Schemes',
+        site_subtitle:'Understand schemes clearly and visit Hyderguda Post Office with confidence.',
+        site_note:'No agents • No market risk • Official information only',
+        our_schemes:'Our Savings Schemes'
       },
       te: {
-        govt_backed: "✔ ప్రభుత్వం మద్దతు ఉన్న పొదుపు పథకాలు",
-        site_title: "ఇండియా పోస్ట్ సేవింగ్స్ పథకాలు",
-        site_subtitle: "పథకాలను సులభంగా అర్థం చేసుకోండి",
-        our_schemes: "మా పొదుపు పథకాలు"
+        govt_backed:'✔ ప్రభుత్వం మద్దతు ఉన్న పొదుపు పథకాలు',
+        site_title:'ఇండియా పోస్ట్ సేవింగ్స్ పథకాలు',
+        site_subtitle:'పథకాలను సులభంగా అర్థం చేసుకొని పోస్టాఫీసును సందర్శించండి.',
+        site_note:'ఏజెంట్లు లేరు • మార్కెట్ ప్రమాదం లేదు • అధికారిక సమాచారం మాత్రమే',
+        our_schemes:'మా పొదుపు పథకాలు'
       }
     },
 
